@@ -6,6 +6,12 @@ project:
   name: "software-factory"
   description: The Kortix Software Factory, as a reference to read and adapt.
 
+# Secrets the factory needs. `kortix onboard` and `kortix doctor --loops` read
+# this list: required ones must be set, optional ones only when a source uses them.
+env:
+  required: [FACTORY_GITHUB_TOKEN, FACTORY_GITHUB_WEBHOOK_SECRET]
+  optional: [FACTORY_ERRORS_WEBHOOK_SECRET, FACTORY_FEEDBACK_WEBHOOK_SECRET, LINEAR_API_KEY, JIRA_API_TOKEN, ASANA_ACCESS_TOKEN, SENTRY_AUTH_TOKEN, BETTERSTACK_API_TOKEN, FACTORY_DB_READONLY_URL, SUPABASE_ACCESS_TOKEN, CLICKHOUSE_URL, PLAIN_API_KEY, INTERCOM_ACCESS_TOKEN, ZENDESK_API_TOKEN]
+
 builtin_agents:
   my_kortix: true
 

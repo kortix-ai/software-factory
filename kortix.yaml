@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://kortix.com/schema/kortix.schema.json
+# Kortix: the agents that work on this repository, and what starts them.
+# Reference: https://kortix.com/docs/developers#kortixyaml-reference
+
+project:
+  name: "software-factory"
+  description: The Kortix Software Factory, as a reference to read and adapt.
+
+builtin_agents:
+  my_kortix: true
+
+default_agent: mykortix
+imports:
+  - .kortix/software-factory/
+
+sandbox:
+  default: dev
+  templates:
+    - slug: dev
+      dockerfile: .kortix/sandbox/Dockerfile
+
+skills:
+  dev-environment: .kortix/skills/dev-environment

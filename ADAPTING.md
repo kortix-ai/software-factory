@@ -139,10 +139,26 @@ both with `FACTORY_GITHUB_WEBHOOK_SECRET`. Then:
   `factory:ready`, `factory:in-progress`, `factory:in-review`,
   `factory:blocked`, `priority:1` … `priority:4`, `needs-review`,
   `do-not-merge` (`gh label create <name> --force`).
-- Linear, Jira or Asana: connect it (`kortix connectors add <slug>`, or
-  `kortix secrets request <TOKEN> --scope runtime` for the API token), create
-  the `factory` label, read the state, status or section ids and write them
-  into `store.states` (`references/stores/<kind>.md` names them).
+- Linear: add the connector to `software-factory.yaml` before guide step 6,
+  so the setup page shows "Connect Linear" (one sign-in, no API key):
+
+  ```yaml
+  connectors:
+    - slug: linear
+      name: Linear
+      provider: composio
+      app: linear
+  ```
+
+  Composio's Linear has the GraphQL action the store uses
+  (`references/stores/linear.md`). Linear's own MCP server has none, so never
+  pick it for the store, whatever the catalog lists first. `LINEAR_API_KEY`
+  only when the person refuses the connector. The person signs in as the
+  factory's Linear user (`store.agent_identity`).
+- Jira or Asana: connect it (`kortix connectors add <slug>`, or
+  `kortix secrets request <TOKEN> --scope runtime` for the API token).
+- Then create the `factory` label, read the state, status or section ids and
+  write them into `store.states` (`references/stores/<kind>.md` names them).
 - JSON file: create the branch with `{"version":1,"next_id":1,"tickets":[]}`.
 
 ### E. The sources
@@ -180,8 +196,12 @@ and read its run line in `kortix triggers runs <slug>`: `errors=none`, and
    `gh issue create --title "<title>" --body "<what, where, expected>" --label kortix`.
    The webhook fires `source-github-issues`; confirm with
    `kortix triggers runs source-github-issues`.
-3. `kortix triggers fire factory-intake --wait 300s`. Give the person the
-   worker session link from the `[factory-intake] claimed` comment.
+3. The source run starts `factory-intake` itself: wait for it with
+   `kortix triggers runs factory-intake`. Fire it by hand
+   (`kortix triggers fire factory-intake --wait 300s`) only when no run
+   appears within 2 minutes; a second fire is a second sandbox for nothing.
+   Give the person the worker session link from the
+   `[factory-intake] claimed` comment.
 4. Wait for the `[factory-worker] handoff` comment (up to ~30 min). Open the
    pull request with the person: the **Review in 60 seconds** section, the
    commands with their real output, the demo when the change is visible.

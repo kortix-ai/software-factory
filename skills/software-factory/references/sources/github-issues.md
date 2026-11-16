@@ -22,8 +22,8 @@ label `kortix`). One run per labeled issue. Enabled by default.
    Closed: end with `skipped_open=0 not_filed=1`.
 3. Prove the label came from a person (not the agent's own login, not a bot).
    Not proven: end, `not_filed=1`.
-4. **The store is GitHub Issues on this repository** (`store.target` equals the
-   code repository): the issue is the ticket. Add `factory`, `source:github-issues`,
+4. **The store is GitHub Issues on the code repository** (`store.target` equals
+   `repository.full_name`): the issue is the ticket. Add `factory`, `source:github-issues`,
    `kind:<k>`, `priority:<p>` and `factory:ready` (a person's label is the accept,
    so the ticket skips `triage`). Post one comment
    `[factory-intake] accepted · labeled kortix → ready`. Do not rewrite the

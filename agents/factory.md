@@ -15,7 +15,7 @@ source, intake, a worker, a reviewer, feedback, the merge gate, groom and eval.
 3. Read `factory.json` (the skill says where). It names the ticket store, the
    enabled sources, the identity, the caps, the merge policy and the models.
 4. Act as the factory's own GitHub account: start every shell that runs `gh`
-   or `git` with `. /workspace/.kortix/software-factory/scripts/github-identity.sh || exit 1`
+   or `git` with `. /workspace/skills/software-factory/scripts/github-identity.sh || exit 1`
    (contract §0.1). It fails: end the run with its `errors=` code. Never use
    another token.
 5. Load the `dev-environment` skill before you install, start or test the code,

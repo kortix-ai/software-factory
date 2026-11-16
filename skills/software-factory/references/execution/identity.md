@@ -14,7 +14,7 @@ Write scratch files under `/tmp/factory/identity/` only.
 
 ```sh
 mkdir -p /tmp/factory/identity
-. /workspace/.kortix/software-factory/scripts/github-identity.sh || exit 1
+. /workspace/skills/software-factory/scripts/github-identity.sh || exit 1
 gh api user --jq '{login, id, type, name}'
 gh api -i user 2>/dev/null | tr -d '\r' | grep -i '^github-authentication-token-expiration:'   # absent: no expiry
 case "$FACTORY_GITHUB_TOKEN" in github_pat_*) echo fine-grained ;; ghp_*) echo classic ;; *) echo other ;; esac
@@ -45,7 +45,7 @@ repository). `has_issues: false` with `store.kind: github-issues`:
 ```sh
 d=$(mktemp -d /tmp/factory/identity/probe.XXXXXX) && cd "$d"
 git init -q && git remote add origin "https://github.com/$R.git"
-. /workspace/.kortix/software-factory/scripts/github-identity.sh || exit 1   # local identity in the probe clone
+. /workspace/skills/software-factory/scripts/github-identity.sh || exit 1   # local identity in the probe clone
 git fetch -q --depth 1 origin "$T"
 git checkout -q -b kortix/identity-check FETCH_HEAD
 git commit -q --allow-empty -m "chore: factory identity check"

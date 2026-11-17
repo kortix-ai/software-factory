@@ -12,7 +12,7 @@ done properly.
    nothing.
 
    ```sh
-   . /workspace/.kortix/software-factory/scripts/github-identity.sh || exit 1
+   . /workspace/skills/software-factory/scripts/github-identity.sh || exit 1
    # prints: factory-identity: login=<login> author=<name> <id+login@users.noreply.github.com>
    ```
 

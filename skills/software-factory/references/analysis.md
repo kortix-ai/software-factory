@@ -90,7 +90,7 @@ Write every key of the template's `factory.json`:
 - `sources`: `github-issues` on; `tests` on when an end-to-end command exists
   (else off, and `source-tests` disabled); every other source on only when its
   evidence exists, its credential is set, and the person said yes. Every
-  enabled source also gets `enabled: true` on its trigger in factory.yaml
+  enabled source also gets `enabled: true` on its trigger in software-factory.yaml
   (`kortix triggers enable <slug>`), and a disabled one `enabled: false`.
 - `caps.workers`: 3 by default; 1 when the dev environment is heavy (more than
   ~4 GB of services).

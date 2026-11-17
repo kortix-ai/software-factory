@@ -2,13 +2,14 @@
 # Sources file tickets. factory-intake hands each ready ticket to one worker session.
 # Workers open verified pull requests. Feedback, merge, groom and eval keep it moving.
 # The contract is the `software-factory` skill. The settings are factory.json.
-# Remove the template: delete this folder and its line under `imports:` in kortix.yaml.
+# Remove the template: delete this file, `factory.json`, `agents/factory.md`, `skills/software-factory/`,
+# and its line under `imports:` in kortix.yaml.
 
 agents:
   factory:
     description: "The Software Factory: files tickets from every source, works each ticket into a verified pull request, reviews, merges and measures."
     mode: primary
-    prompt_file: .kortix/software-factory/agents/factory.md
+    prompt_file: agents/factory.md
     skills: [software-factory, kortix-cli, kortix-connectors]
     secrets: "*"
     connectors: "*"
@@ -30,7 +31,7 @@ agents:
       - workspace.gateway.spend.read
 
 skills:
-  software-factory: .kortix/software-factory/skills/software-factory
+  software-factory: skills/software-factory
 
 triggers:
   # ── Execution: the loops that turn tickets into merged pull requests ──────────

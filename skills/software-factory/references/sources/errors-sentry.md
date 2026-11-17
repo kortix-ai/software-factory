@@ -32,8 +32,8 @@ reference: `source-errors-poll` (default) and `source-errors` (push).
 | | |
 |---|---|
 | Signal | one Sentry issue alert: a new issue, a regression, or a frequency threshold |
-| Finding | one Sentry issue (one fingerprint) with an in-app stack frame in this repository |
-| Bar | an in-app frame (a file of this repository) **and** at least 10 events or 3 users in 24 h, or a regression of a resolved issue. Below the bar: one line in the `errors:ledger` digest |
+| Finding | one Sentry issue (one fingerprint) with an in-app stack frame in the code repository |
+| Bar | an in-app frame (a file of the code repository) **and** at least 10 events or 3 users in 24 h, or a regression of a resolved issue. Below the bar: one line in the `errors:ledger` digest |
 | Key | `errors:sentry:<project slug>:<sentry issue short id lowercased, or the fingerprint hash>` |
 | Signal value | `signal: events_24h=<n> users_24h=<n>` |
 | Priority | 1 when `level: fatal` or more than 100 users in 24 h; 2 a backend or API error; 3 a frontend error; 4 a known noise class |

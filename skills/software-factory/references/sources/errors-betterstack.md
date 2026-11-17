@@ -33,8 +33,8 @@ Uptime alone is never a code anchor.
 | | |
 |---|---|
 | Signal | one error pattern alert (new, regressed or above a threshold), or one incident |
-| Finding | one error pattern with an application frame in this repository; an incident only as evidence of a pattern |
-| Bar | an application frame or a route of this repository, and at least 10 occurrences or 3 affected users in 24 h, or a regression after a fix. An incident with no error pattern and no log line pointing at code is not filed: count it in `uptime_only=` |
+| Finding | one error pattern with an application frame in the code repository; an incident only as evidence of a pattern |
+| Bar | an application frame or a route of the code repository, and at least 10 occurrences or 3 affected users in 24 h, or a regression after a fix. An incident with no error pattern and no log line pointing at code is not filed: count it in `uptime_only=` |
 | Key | `errors:betterstack:<application id>:<pattern slug>` (the normalized error class and the top frame, slugged) |
 | Signal value | `signal: occurrences_24h=<n> users_24h=<n>` |
 | Priority | 1 for a production outage with an anchor; 2 a backend error; 3 a frontend error; 4 noise |
@@ -48,7 +48,7 @@ Uptime alone is never a code anchor.
    the monitor and the start time; never the cause or the metadata.
 2. Read the pattern through the API or the connector: the exception class, a
    normalized message (ids, numbers, emails, URLs replaced by placeholders),
-   the stack frames of this repository, the counts per 24 h, the release. Never
+   the stack frames of the code repository, the counts per 24 h, the release. Never
    copy a raw event, a request body or user context.
 3. Incident: look for error patterns and log lines in the same window
    (`logs-anomaly.md` explains the query). Found: file or update that

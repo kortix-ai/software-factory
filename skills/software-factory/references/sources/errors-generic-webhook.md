@@ -25,8 +25,8 @@ and a JSON body. Any shape works; this one needs no mapping:
 | | |
 |---|---|
 | Signal | one error alert |
-| Finding | one error fingerprint with a frame or a route in this repository |
-| Bar | a frame or a route in this repository, and at least 10 events or 3 users in 24 h, or a regression after a fix |
+| Finding | one error fingerprint with a frame or a route in the code repository |
+| Bar | a frame or a route in the code repository, and at least 10 events or 3 users in 24 h, or a regression after a fix |
 | Key | `errors:<tracker>:<project>:<sha1-12 of the normalized fingerprint>` (`printf '%s' "$FP" \| sha1sum \| cut -c1-12`) |
 | Signal value | `signal: events_24h=<n> users_24h=<n>` |
 | Priority | 1 fatal or more than 100 users; 2 backend; 3 frontend; 4 noise |

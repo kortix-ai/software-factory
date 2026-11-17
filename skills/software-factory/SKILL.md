@@ -15,9 +15,11 @@ into a reference; point here.
 
 Read it at the start of every run, first match wins:
 
-1. `/workspace/.kortix/software-factory/factory.json` (the agent checks out the
-   config repository in `/workspace`).
-2. `gh api repos/<code repo>/contents/.kortix/software-factory/factory.json --jq .content | base64 -d`.
+1. `/workspace/factory.json`: the agent clones the workspace repository into
+   `/workspace`. The code is in another repository, on GitHub.
+2. The clone runs in the background after the session starts. While
+   `/tmp/kortix/workspace-setup.json` says `"state": "running"`, wait (at
+   most 2 minutes), then read 1 again.
 
 No file: stop the run with `errors=no-config`. Never guess a store.
 
@@ -51,16 +53,15 @@ tell the person's comments from the factory's except by the markers.
 Start every shell that runs `gh` or `git` with:
 
 ```sh
-. /workspace/.kortix/software-factory/scripts/github-identity.sh || exit 1
+. /workspace/skills/software-factory/scripts/github-identity.sh || exit 1
 ```
 
 It unsets every other GitHub credential, exports `GH_TOKEN` from
 `FACTORY_GITHUB_TOKEN`, checks the token's login against
 `identity.github_login`, runs `gh auth setup-git`, and sets `user.name` and
 `user.email` (global, and local inside a checkout). It is idempotent. The file
-is missing (the config lives elsewhere): fetch it once with
-`GH_TOKEN="$FACTORY_GITHUB_TOKEN" gh api repos/<config repo>/contents/.kortix/software-factory/scripts/github-identity.sh --jq .content | base64 -d > /tmp/factory/github-identity.sh`
-and source that copy. It fails: end the run with its `errors=` code
+is missing: the workspace clone is still running; wait for it as section 0
+says. It fails: end the run with its `errors=` code
 (`no-token`, `token-rejected`, `wrong-identity`). Never fall back to another
 token. `references/execution/identity.md` checks the identity end to end.
 
@@ -307,7 +308,7 @@ source sets it at create; after that only groom changes it.
 | `caps.rework_cycles_before_human` | 5 | `request_changes` verdicts on one ticket; then the ticket goes to `blocked` for a person |
 | `caps.new_tickets_per_source_per_day` | 5 | hard rule 5 |
 | `caps.reviewers` | 2 | independent reviewer sessions at once |
-| every trigger | `max_runs_per_hour` / `max_runs_per_day` in factory.yaml | the platform stops a runaway trigger |
+| every trigger | `max_runs_per_hour` / `max_runs_per_day` in software-factory.yaml | the platform stops a runaway trigger |
 
 ## 8. Comment markers
 
@@ -540,7 +541,7 @@ that line and nothing else: no ticket, no comment, no file.
 1. Write `references/sources/<name>.md`: the signal, how to read it, the
    finding, the bar, the key, the signal value, the priority, the ticket
    fields and the credentials it may use.
-2. Add a trigger `source-<name>` to factory.yaml, `enabled: false`, with
+2. Add a trigger `source-<name>` to software-factory.yaml, `enabled: false`, with
    `max_runs_per_hour` or `max_runs_per_day`, and an entry in factory.json
    `sources`.
 3. Add its key to §4 and its label to §2.

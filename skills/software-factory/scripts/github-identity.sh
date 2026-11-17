@@ -1,7 +1,7 @@
 # The Software Factory's GitHub identity, for one shell.
 #
 # Source it, never execute it, at the start of every shell that runs gh or git:
-#   . /workspace/.kortix/software-factory/scripts/github-identity.sh
+#   . /workspace/skills/software-factory/scripts/github-identity.sh
 #
 # It pins gh and git to FACTORY_GITHUB_TOKEN, checks that the token's login is
 # identity.github_login in factory.json, and sets the commit author to the
@@ -42,7 +42,7 @@ factory_github_identity() {
   _fgi_id="$(printf '%s' "$_fgi_user" | cut -f2)"
   _fgi_gh_name="$(printf '%s' "$_fgi_user" | cut -f3)"
 
-  _fgi_config="${FACTORY_CONFIG:-/workspace/.kortix/software-factory/factory.json}"
+  _fgi_config="${FACTORY_CONFIG:-/workspace/factory.json}"
   _fgi_want_login=''
   _fgi_want_name=''
   _fgi_want_email=''

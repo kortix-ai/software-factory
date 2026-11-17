@@ -3,18 +3,21 @@
 Run the guide below as written. This template adds its steps at the points
 named here, in this order: **analysis → identity → store → sources → first
 proof**. The factory is one agent, `factory`, with one contract skill,
-`software-factory`. Its files are under `.kortix/software-factory/`: read
-`skills/software-factory/SKILL.md` once before you start (sections 0, 0.1
+`software-factory`. Its files are `software-factory.yaml`, `factory.json`, `agents/factory.md`
+and `skills/software-factory/`: read `skills/software-factory/SKILL.md` once before you start (sections 0, 0.1
 and 1 at least), so you know the identity, the store, the sources and the
 merge policy you set up.
+
+Every **Ask** below is a question for the one message of guide step 3, with
+its recommended answer. Never ask it where it appears.
 
 ### A. In guide steps 2 to 4: analysis, then factory.json
 
 1. Run every check of
-   `.kortix/software-factory/skills/software-factory/references/analysis.md` on
+   `skills/software-factory/references/analysis.md` on
    the checkout. Read only; never `cat` an env file.
 2. **Ask** which ticket store is the source of truth (analysis section 2).
-   Recommend the one the team uses; none: GitHub Issues on this repository.
+   Recommend the one the team uses; none: GitHub Issues on the code repository.
 3. **Ask** which sources to turn on. Show only the sources whose evidence you
    found (analysis section 3), one line each: the evidence, what it needs.
    For example: `@sentry/nextjs` in `package.json` → `errors` (Sentry, poll),
@@ -24,9 +27,9 @@ merge policy you set up.
 4. **Ask**: "May the factory merge pull requests that pass every gate, or does
    a person merge each one?" Default and recommended to start: a person merges
    (`merge.policy: hold`).
-5. Write `.kortix/software-factory/factory.json` (analysis section 6). Turn
+5. Write `factory.json` (analysis section 6). Turn
    each chosen source's trigger on and every other source's trigger off in
-   `factory.yaml` (`enabled: true` or `false`), so the two files agree. The
+   `software-factory.yaml` (`enabled: true` or `false`), so the two files agree. The
    `errors` source has two triggers: enable `source-errors-poll` for
    `delivery: poll`, `source-errors` for `push`.
 
@@ -36,14 +39,15 @@ Read the code repository's `AGENTS.md`, `CLAUDE.md` and `CONTRIBUTING.md`. A rul
 that conflicts with the factory contract (for example "push to main") is shown to
 the person with the factory's rule beside it. **Ask** which one wins; the factory's
 contract wins without an answer. Write the decision into the `dev-environment`
-skill. When the config lives in its own repository, the code repository's skills
-(`.agents/skills`, `.claude/skills`) cannot be registered from it: the worker reads
-them from its clone, and the `dev-environment` skill names where they are.
+skill. The config lives in the workspace repository, apart from the code, so the
+code repository's skills (`.agents/skills`, `.claude/skills`) cannot be registered
+from it: the worker reads them from its clone, and the `dev-environment` skill
+names where they are.
 
 ### B. In guide step 4: grant the dev environment
 
 Add `dev-environment` to `agents.factory.skills` in
-`.kortix/software-factory/factory.yaml`, once `kortix.yaml` registers it. The
+`software-factory.yaml`, once `kortix.yaml` registers it. The
 workers verify every change with its commands.
 
 ### C. After guide step 6: the factory's own GitHub identity
@@ -135,10 +139,26 @@ both with `FACTORY_GITHUB_WEBHOOK_SECRET`. Then:
   `factory:ready`, `factory:in-progress`, `factory:in-review`,
   `factory:blocked`, `priority:1` … `priority:4`, `needs-review`,
   `do-not-merge` (`gh label create <name> --force`).
-- Linear, Jira or Asana: connect it (`kortix connectors add <slug>`, or
-  `kortix secrets request <TOKEN> --scope runtime` for the API token), create
-  the `factory` label, read the state, status or section ids and write them
-  into `store.states` (`references/stores/<kind>.md` names them).
+- Linear: add the connector to `software-factory.yaml` before guide step 6,
+  so the setup page shows "Connect Linear" (one sign-in, no API key):
+
+  ```yaml
+  connectors:
+    - slug: linear
+      name: Linear
+      provider: composio
+      app: linear
+  ```
+
+  Composio's Linear has the GraphQL action the store uses
+  (`references/stores/linear.md`). Linear's own MCP server has none, so never
+  pick it for the store, whatever the catalog lists first. `LINEAR_API_KEY`
+  only when the person refuses the connector. The person signs in as the
+  factory's Linear user (`store.agent_identity`).
+- Jira or Asana: connect it (`kortix connectors add <slug>`, or
+  `kortix secrets request <TOKEN> --scope runtime` for the API token).
+- Then create the `factory` label, read the state, status or section ids and
+  write them into `store.states` (`references/stores/<kind>.md` names them).
 - JSON file: create the branch with `{"version":1,"next_id":1,"tickets":[]}`.
 
 ### E. The sources
@@ -168,15 +188,20 @@ and read its run line in `kortix triggers runs <slug>`: `errors=none`, and
    started on an unbuilt image runs on the platform default and cannot boot the app.
    The reviewer should run on the strongest connected model: when `models.reviewer`
    and `models.worker_hard` are null and a stronger model than the workspace
-   default is connected (`kortix models ls`), **Ask** to set them in `factory.json`.
-1. **Ask** for one tiny, real change (a typo, a missing test, a small bug) or
-   propose one you found in the analysis.
+   default is connected (`kortix models ls`), set them in `factory.json` unless
+   the person said no in guide step 3.
+1. Use the task the person approved in guide step 3: one tiny, real change
+   (a typo, a missing test, a small bug) you found in the analysis.
 2. File it in the store as a person would: on GitHub Issues,
    `gh issue create --title "<title>" --body "<what, where, expected>" --label kortix`.
    The webhook fires `source-github-issues`; confirm with
    `kortix triggers runs source-github-issues`.
-3. `kortix triggers fire factory-intake --wait 300s`. Give the person the
-   worker session link from the `[factory-intake] claimed` comment.
+3. The source run starts `factory-intake` itself: wait for it with
+   `kortix triggers runs factory-intake`. Fire it by hand
+   (`kortix triggers fire factory-intake --wait 300s`) only when no run
+   appears within 2 minutes; a second fire is a second sandbox for nothing.
+   Give the person the worker session link from the
+   `[factory-intake] claimed` comment.
 4. Wait for the `[factory-worker] handoff` comment (up to ~30 min). Open the
    pull request with the person: the **Review in 60 seconds** section, the
    commands with their real output, the demo when the change is visible.
